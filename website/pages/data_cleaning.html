@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.242">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Cleaning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="data_cleaning_files/libs/clipboard/clipboard.min.js"></script>
+<script src="data_cleaning_files/libs/quarto-html/quarto.js"></script>
+<script src="data_cleaning_files/libs/quarto-html/popper.min.js"></script>
+<script src="data_cleaning_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="data_cleaning_files/libs/quarto-html/anchor.min.js"></script>
+<link href="data_cleaning_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="data_cleaning_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="data_cleaning_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="data_cleaning_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="data_cleaning_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="data_cleaning_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="data_cleaning_files/libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Data Cleaning</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">'ignore'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>myImage <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/data_cleaning.png'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>myImage</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<p><img src="data_cleaning_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><em>Picture from Obviously.ai</em></p>
+<p>Data cleansing is the process of correcting or removing, incorrect, or unnecessary data from a data set prior to data analysis. Data cleansing turns some messy, potentially problematic data into clean data. r is an excellent tool for working with data. Packages like tidyverse make complex data manipulation almost effortless. Also, since R is a common language for statistics, it is very easy to use R for further calculations on financial type data. Compared to R, Python is more convenient for working with NLP data. In this part, FTX dataset and the Twitter dataset are chosen and cleaned by using R and python respectively.</p>
+<section id="data-cleaning-by-r" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning-by-r">Data Cleaning by R</h2>
+<section id="purpose" class="level3">
+<h3 class="anchored" data-anchor-id="purpose">Purpose</h3>
+<p>Before starting to clean up the data using R, the final perfect data should achieve no erroneous values; Eliminate Redundancy; Data should be reliable and valid; Time data, like date, remain coherent; Missing values are treated correctly; Data should remain complete after cleaning.</p>
+</section>
+<section id="code-and-methodology" class="level3">
+<h3 class="anchored" data-anchor-id="code-and-methodology">Code and Methodology</h3>
+<p>In this part, each of the steps in FTX dataset cleaning will be presented in order.</p>
+<section id="step-1-observe-the-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-observe-the-dataset">Step 1: Observe the dataset</h4>
+<p>An important “pre-data cleaning” step is domain knowledge. One needs to know what each variable means, which variables are important, which values may need to be cleaned for later data analysis, and which new variables should be added by calculating among the original data variables.</p>
+<p>Open R studio, import the FTX dataset, use <code>head()</code> to look at the first few rows of data, The initial data looks like the picture below：</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>myImage1 <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/initial _data.png'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>myImage1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div id="fig-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="data_cleaning_files/figure-html/fig-1-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: FTX Dataset initial data</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="step-2-check-for-data-irregularities" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-check-for-data-irregularities">Step 2: Check for data irregularities</h4>
+<p>This dataset has irregularities, which include accuracy issues such as invalid values and outliers. For example, the time format of the <code>StartTime</code> column is <code>yyyy-mm-ddThh:mm:ss+ms:µs</code>. Such a timestamp format is not conducive to time analysis. Also, since the expectation for the <code>StartTime</code> column to be taken at 0:00 UTC each day when getting the data, this column only needs to take the date data, not the exact time data. All exact time data like hours, minutes need to be removed, and change the timestamp format to <code>yyyy-mm-dd</code>. Also, the <code>StartTime</code> and <code>time</code> columns belong to data duplication, and the <code>time</code> column uses the unit: millisecond to record time, which needs to be deleted from the <code>time</code> column.</p>
+<p>In the original dataset, there are two columns that contain time information. Obviously, the second column about time is unnecessary, so this column is removed. Meanwhile, the first time column contains a lot of unnecessary information. I removed the extra information by splitting and deleting it. With these steps, I got the initial cleaned-up data. The data type of the column date was also modified from char to date.</p>
+<p>After modifing these two colums, the initial data looks more clean and neat. See Figure-2 below:</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>myImage2 <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/initial _data_1st_clean.png'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>myImage2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<div id="fig-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="data_cleaning_files/figure-html/fig-2-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: FTX Dataset first clean</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="step-3-add-columns-and-deal-with-missing-values" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-add-columns-and-deal-with-missing-values">Step 3: Add Columns and Deal with Missing Values</h4>
+<p>However, the analysis requires price stability over time, so a rolling average needs to be calculated to get the 20-day or 5-day closing prices for different types of cryptocurrencies. the 20-day average closing price is the variable <code>M20</code> and the 5-day average closing price is the variable <code>M5</code>. these two variables can be used as important indicators to determine the stability of cryptocurrency prices. It is not recommended to directly delete or add new values to the <code>NA</code> values for each cryptocurrency as a result of calculating the <code>M20</code> and <code>M5</code> columns. Since M20 is the average of cryptocurrency closing prices over a 20-day period, the values from the first row to the 19th row are NA. Similarly, in M5, the values from the first row to the fifth row are NA. the analysis will require other variables for the calculation, and the missing values will be directly ignored and will not affect the subsequent analysis process. From the table-1 below, all the values required so far can be obtained.</p>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.float_format'</span>,<span class="kw">lambda</span> x: <span class="st">'</span><span class="sc">%.4f</span><span class="st">'</span> <span class="op">%</span> x)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ftx<span class="op">=</span>pd.read_csv(<span class="st">'../../data/01-modified-data/cleaned_currency.csv'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ftx.tail(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<div id="tbl-1" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;1:  Cleaned FTX Dataset </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>date</th>
+      <th>open</th>
+      <th>high</th>
+      <th>low</th>
+      <th>close</th>
+      <th>volume</th>
+      <th>exchange</th>
+      <th>M20</th>
+      <th>M5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3434</th>
+      <td>2022-08-27</td>
+      <td>6.5040</td>
+      <td>6.6105</td>
+      <td>6.4115</td>
+      <td>6.5300</td>
+      <td>2563168.6220</td>
+      <td>LINK/USD</td>
+      <td>7.8931</td>
+      <td>6.9035</td>
+    </tr>
+    <tr>
+      <th>3435</th>
+      <td>2022-08-28</td>
+      <td>6.5300</td>
+      <td>6.6305</td>
+      <td>6.2250</td>
+      <td>6.2525</td>
+      <td>2912844.5304</td>
+      <td>LINK/USD</td>
+      <td>7.7752</td>
+      <td>6.7061</td>
+    </tr>
+    <tr>
+      <th>3436</th>
+      <td>2022-08-29</td>
+      <td>6.2525</td>
+      <td>6.7295</td>
+      <td>6.1970</td>
+      <td>6.6985</td>
+      <td>4572188.1508</td>
+      <td>LINK/USD</td>
+      <td>7.6728</td>
+      <td>6.6221</td>
+    </tr>
+    <tr>
+      <th>3437</th>
+      <td>2022-08-30</td>
+      <td>6.6985</td>
+      <td>6.8210</td>
+      <td>6.3695</td>
+      <td>6.5585</td>
+      <td>4141158.0030</td>
+      <td>LINK/USD</td>
+      <td>7.5477</td>
+      <td>6.5088</td>
+    </tr>
+    <tr>
+      <th>3438</th>
+      <td>2022-08-31</td>
+      <td>6.5585</td>
+      <td>6.8955</td>
+      <td>6.5410</td>
+      <td>6.6285</td>
+      <td>4622365.3738</td>
+      <td>LINK/USD</td>
+      <td>7.4310</td>
+      <td>6.5336</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p>To learn more about code, see <a href="https://github.com/anly501/anly-501-project-T1an-T1an/tree/main/codes/02-data-cleaning">R code for data cleaning</a></p>
+</section>
+</section>
+</section>
+<section id="data-cleaning-by-python" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning-by-python">Data Cleaning by Python</h2>
+<section id="purpose-1" class="level3">
+<h3 class="anchored" data-anchor-id="purpose-1">Purpose</h3>
+<p>For the Twitter dataset, the cleaned text data should not include emojis or special symbols. Prepare for sentiment analysis by segmenting and filtering text data; analyze word frequencies for fast sentiment analysis using NLTK’s built-in classifier; define features for custom classification and analyze the relevance of high-frequency words.</p>
+</section>
+<section id="code-and-methodology-1" class="level3">
+<h3 class="anchored" data-anchor-id="code-and-methodology-1">Code and Methodology</h3>
+<p>Text cleaning is the process of rearranging human language into a format that machine models can understand. Text cleaning can be performed using simple Python code that eliminates stop words, removes single-code words, and simplifies complex words to their root form. The Twitter dataset is expected to use sentiment analysis, which is the practice of using algorithms to classify various relevant text samples into overall positive and negative categories. The NLTK package can efficiently process and analyze linguistic data. The dataset will be used NLTK to classify the data in a variety of ways, including sentiment analysis, through powerful built-in machine learning operations.</p>
+<div class="cell" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.tokenize <span class="im">import</span> TweetTokenizer</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords<span class="co">#python -m nltk.downloader stopwords</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(threshold<span class="op">=</span>np.inf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="step-1-observe-the-dataset-1" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-observe-the-dataset-1">Step 1: Observe the dataset</h4>
+<p>The initial data from twitter is a dataset in json format. The json file was later converted to a more readable Dataframe using the pandas package. By looking at it, we can see that this dataset does contain a lot of information, but some of it is not unwanted. Only <code>text</code> is the most important category. Therefore, all other information was removed except for the <code>text</code>.</p>
+<div class="cell" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>myImage3 <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/raw_twitter_data.png'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>myImage3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<div id="fig-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="data_cleaning_files/figure-html/fig-3-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Twitter Dataset JSON format</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>First, read the datasets, not all the data categories in the datasets are useful for sentiment analysis, only the text column needs to be focused on cleaning up, in this case, the categories the other columns are in are not important for analysis. Keeping these unneeded categories will take up unnecessary space and may also slow down the runtime. A Dataframe that retains only the <code>text</code> column is shown in table-2 below.</p>
+<div class="cell" data-execution_count="7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span>pd.read_csv(<span class="st">'../../data/01-modified-data/twitter_text_data.csv'</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>data.head(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div id="tbl-2" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;2:  Twitter “text” Dataset </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>@TxCompleted I think Id be lying it I put anyt...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>RT @Nanda__OCE: 🎁@satoshinftclub WHITELIST &amp;am...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>wl Notice Minting @eleven_eth @cryptobrighton ...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>RT @MatCote3: @MoonlitMonkey69 @THORmaximalist...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>RT @BlockBet_: Did you know: On average, 900 $...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-2-removing-stop-words-and-normalizing-words" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-removing-stop-words-and-normalizing-words">Step 2: Removing Stop Words and Normalizing Words</h4>
+<p>After removing the irrelevant columns and splitting each tweet into individual words. Then removing capitalization that would confuse a computer model, change all uppercase letters of the text to lowercase. The data below shows the first 30 characters, and by looking at them we can see that there is still a fair amount of noise - because NLP converts @, URLs, punctuation, and emojis to Unicode, making them unhelpful for analysis, we further standardize by eliminating Unicode characters.</p>
+<div class="cell" data-execution_count="8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tknzr <span class="op">=</span> TweetTokenizer()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tokenizer_tweets(df):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> df[<span class="st">'text'</span>]:</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        text <span class="op">+=</span> t</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> [i.lower() <span class="cf">for</span> i <span class="kw">in</span> tknzr.tokenize(text)]</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tokens</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>tokens <span class="op">=</span> tokenizer_tweets(data)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>tokens_sub<span class="op">=</span>tokens[<span class="dv">1</span>:<span class="dv">30</span>]</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tokens_sub)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>['i', 'think', 'id', 'be', 'lying', 'it', 'i', 'put', 'anything', ',', 'cause', 'even', 'something', 'im', 'attached', 'to', ',', 'id', 'probably', 'sell', 'for', 'the', 'right', 'price.rt', '@nanda__oce', ':', '🎁', '@satoshinftclub', 'whitelist']</code></pre>
+</div>
+</div>
+<p>In all words, some words and punctuation are redundant, so I removed punctuation and words with less than three letters by import stopwords. In this way, a previously complex, multi-element text is transformed into a series of keywords prepared for text analysis.</p>
+<div class="cell" data-execution_count="9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>punctiuation <span class="op">=</span> <span class="bu">list</span>(string.punctuation)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>stop <span class="op">=</span> stopwords.words(<span class="st">'english'</span>) <span class="op">+</span> punctiuation</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clear_tokens(tokens):</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    tokens_cl <span class="op">=</span> [t <span class="cf">for</span> t <span class="kw">in</span> tokens <span class="cf">if</span> (<span class="bu">len</span>(t) <span class="op">&gt;=</span> <span class="dv">3</span>) </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (<span class="kw">not</span> t.startswith((<span class="st">'#'</span>, <span class="st">'@'</span>)))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (<span class="kw">not</span> t.startswith(<span class="st">'http'</span>))</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (t <span class="kw">not</span> <span class="kw">in</span> stop)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (t[<span class="dv">0</span>].isalpha())]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tokens_cl</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>tokens_cl <span class="op">=</span> clear_tokens(tokens)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>tokens_cl_sub<span class="op">=</span>tokens_cl[<span class="dv">1</span>:<span class="dv">10</span>]</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tokens_cl_sub)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>['lying', 'put', 'anything', 'cause', 'even', 'something', 'attached', 'probably', 'sell']</code></pre>
+</div>
+</div>
+</section>
+<section id="step-3-vectorizing-text" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-vectorizing-text">Step 3: Vectorizing Text</h4>
+<p>The most basic form of analysis of textual data is to take out the word frequency. A single tweet is too small of an entity to find out the distribution of words, hence, the analysis of the frequency of words would be done on all tweets. The number of occurrences of different keywords is shown in tablt-3 below.</p>
+<div class="cell" data-execution_count="10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>word_occ <span class="op">=</span> pd.value_counts(np.array(tokens_cl))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>word_occ <span class="op">=</span> pd.DataFrame(word_occ)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>word_occ<span class="op">=</span>word_occ.reset_index()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>word_occ.columns<span class="op">=</span>[<span class="st">'key_words'</span>, <span class="st">'number'</span>]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>word_occ.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<div id="tbl-3" class="anchored">
+
+<div>
+
+<table class="dataframe table table-sm table-striped"><caption>Table&nbsp;3:  Twitter Dataset - Keywords </caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>key_words</th>
+      <th>number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>eth</td>
+      <td>299</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>follow</td>
+      <td>151</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>enter</td>
+      <td>96</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>get</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>giveaway</td>
+      <td>88</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p>Because of the large number of words, I randomly selected 20 words for the CountVectorizer step. By using CountVectorizer, I derived ONE_HOT_ENCODED matrix.</p>
+<div class="cell" data-execution_count="11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vectorizer<span class="op">=</span>CountVectorizer() </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>tokens_cl_sub <span class="op">=</span> random.sample(tokens_cl, <span class="dv">20</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>Xs  <span class="op">=</span>  vectorizer.fit_transform(tokens_cl_sub)   </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>col_names <span class="op">=</span>vectorizer.get_feature_names()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>X<span class="op">=</span>np.array(Xs.todense())</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>maxs<span class="op">=</span>np.<span class="bu">max</span>(X,axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>ONE_HOT_ENCODED<span class="op">=</span>np.ceil(X<span class="op">/</span>maxs)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>ONE_HOT_ENCODED[:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>array([[0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0.],
+       [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0.],
+       [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0.,
+        0., 0., 0., 0.],
+       [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 1., 0.],
+       [0., 1., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0.]])</code></pre>
+</div>
+</div>
+<p>The final correlation table looks like this.</p>
+<div class="cell" data-execution_count="12">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>noise<span class="op">=</span>np.random.uniform(<span class="dv">0</span>,<span class="fl">0.00001</span>,X.shape) </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df1<span class="op">=</span>pd.DataFrame(noise<span class="op">+</span>X, columns<span class="op">=</span>col_names)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>corr<span class="op">=</span>df1.corr()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>corr.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="36">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>airdrop</th>
+      <th>away</th>
+      <th>btc</th>
+      <th>bullish</th>
+      <th>city</th>
+      <th>computer</th>
+      <th>decent</th>
+      <th>get</th>
+      <th>giving</th>
+      <th>incentives</th>
+      <th>moon</th>
+      <th>opensea</th>
+      <th>price</th>
+      <th>propose</th>
+      <th>really</th>
+      <th>something</th>
+      <th>spot</th>
+      <th>thank</th>
+      <th>wedge</th>
+      <th>wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>airdrop</th>
+      <td>1.0000</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+    </tr>
+    <tr>
+      <th>away</th>
+      <td>-0.0526</td>
+      <td>1.0000</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>1.0000</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+    </tr>
+    <tr>
+      <th>btc</th>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>1.0000</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.1111</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>0.6882</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+      <td>-0.0765</td>
+    </tr>
+    <tr>
+      <th>bullish</th>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>1.0000</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+    </tr>
+    <tr>
+      <th>city</th>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>1.0000</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0765</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+      <td>-0.0526</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>To learn more about code, see <a href="https://github.com/anly501/anly-501-project-T1an-T1an/tree/main/codes/02-data-cleaning">R code for data cleaning</a></p>
+<!-- -->
+
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Cleaning "</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">    smooth-scroll: true</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: </span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">      light: cosmo</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">      dark: darkly </span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">'ignore'</span>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>myImage <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/data_cleaning.png'</span>)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>myImage</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>*Picture from Obviously.ai*</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>Data cleansing is the process of correcting or removing, incorrect, or unnecessary data from a data set prior to data analysis. Data cleansing turns some messy, potentially problematic data into clean data. r is an excellent tool for working with data. Packages like tidyverse make complex data manipulation almost effortless. Also, since R is a common language for statistics, it is very easy to use R for further calculations on financial type data. Compared to R, Python is more convenient for working with NLP data. In this part,  FTX dataset and the Twitter dataset are chosen and cleaned by using R and python respectively.</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Cleaning by R</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="fu">### Purpose </span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>Before starting to clean up the data using R, the final perfect data should achieve no erroneous values; Eliminate Redundancy; Data should be reliable and valid; Time data, like date, remain coherent; Missing values are treated correctly; Data should remain complete after cleaning.</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### Code and Methodology</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>In this part, each of the steps in FTX dataset cleaning will be presented in order.</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Step 1: Observe the dataset</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>An important "pre-data cleaning" step is domain knowledge. One needs to know what each variable means, which variables are important, which values may need to be cleaned for later data analysis, and which new variables should be added by calculating among the original data variables. </span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>Open R studio, import the FTX dataset, use <span class="in">`head()`</span> to look at the first few rows of data, The initial data looks like the picture below：</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-1</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: FTX Dataset initial data</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>myImage1 <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/initial _data.png'</span>)</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>myImage1</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Step 2:  Check for data irregularities</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>This dataset has irregularities, which include accuracy issues such as invalid values and outliers. For example, the time format of the <span class="in">`StartTime`</span> column is <span class="in">`yyyy-mm-ddThh:mm:ss+ms:µs`</span>. Such a timestamp format is not conducive to time analysis. Also, since the expectation for the <span class="in">`StartTime`</span> column to be taken at 0:00 UTC each day when getting the data, this column only needs to take the date data, not the exact time data. All exact time data like hours, minutes need to be removed, and change the timestamp format to <span class="in">`yyyy-mm-dd`</span>. Also, the <span class="in">`StartTime`</span> and <span class="in">`time`</span> columns belong to data duplication, and the <span class="in">`time`</span>  column uses the unit: millisecond to record time, which needs to be deleted from the <span class="in">`time`</span>  column.</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>In the original dataset, there are two columns that contain time information. Obviously, the second column about time is unnecessary, so this column is removed. Meanwhile, the first time column contains a lot of unnecessary information. I removed the extra information by splitting and deleting it. With these steps, I got the initial cleaned-up data. The data type of the column date was also modified from char to date.  </span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>After modifing these two colums, the initial data looks more clean and neat. See Figure-2 below:</span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-2</span></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: FTX Dataset first clean</span></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>myImage2 <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/initial _data_1st_clean.png'</span>)</span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>myImage2</span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Step 3: Add Columns and Deal with Missing Values </span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>However, the analysis requires price stability over time, so a rolling average needs to be calculated to get the 20-day or 5-day closing prices for different types of cryptocurrencies. the 20-day average closing price is the variable <span class="in">`M20`</span> and the 5-day average closing price is the variable <span class="in">`M5`</span>. these two variables can be used as important indicators to determine the stability of cryptocurrency prices. It is not recommended to directly delete or add new values to the <span class="in">`NA`</span> values for each cryptocurrency as a result of calculating the <span class="in">`M20`</span> and <span class="in">`M5`</span> columns. Since M20 is the average of cryptocurrency closing prices over a 20-day period, the values from the first row to the 19th row are NA. Similarly, in M5, the values from the first row to the fifth row are NA. the analysis will require other variables for the calculation, and the missing values will be directly ignored and will not affect the subsequent analysis process. From the table-1 below, all the values required so far can be obtained. </span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-1</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Cleaned FTX Dataset </span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.float_format'</span>,<span class="kw">lambda</span> x: <span class="st">'</span><span class="sc">%.4f</span><span class="st">'</span> <span class="op">%</span> x)</span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>ftx<span class="op">=</span>pd.read_csv(<span class="st">'../../data/01-modified-data/cleaned_currency.csv'</span>)</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>ftx.tail(<span class="dv">5</span>)</span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>To learn more about code, see <span class="co">[</span><span class="ot">R code for data cleaning</span><span class="co">](https://github.com/anly501/anly-501-project-T1an-T1an/tree/main/codes/02-data-cleaning)</span></span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Cleaning by Python</span></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a><span class="fu">### Purpose </span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>For the Twitter dataset, the cleaned text data should not include emojis or special symbols. Prepare for sentiment analysis by segmenting and filtering text data; analyze word frequencies for fast sentiment analysis using NLTK's built-in classifier; define features for custom classification and analyze the relevance of high-frequency words.</span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### Code and Methodology</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>Text cleaning is the process of rearranging human language into a format that machine models can understand. Text cleaning can be performed using simple Python code that eliminates stop words, removes single-code words, and simplifies complex words to their root form. The Twitter dataset is expected to use sentiment analysis, which is the practice of using algorithms to classify various relevant text samples into overall positive and negative categories. The NLTK package can efficiently process and analyze linguistic data. The dataset will be used NLTK to classify the data in a variety of ways, including sentiment analysis, through powerful built-in machine learning operations.</span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.tokenize <span class="im">import</span> TweetTokenizer</span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords<span class="co">#python -m nltk.downloader stopwords</span></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(threshold<span class="op">=</span>np.inf)</span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Step 1: Observe the dataset</span></span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>The initial data from twitter is a dataset in json format. The json file was later converted to a more readable Dataframe using the pandas package. By looking at it, we can see that this dataset does contain a lot of information, but some of it is not unwanted. Only <span class="in">`text`</span> is the most important category. Therefore, all other information was removed except for the <span class="in">`text`</span>.</span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-3</span></span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Twitter Dataset JSON format</span></span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>myImage3 <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'../../501-project-website/images/data_cleaning/raw_twitter_data.png'</span>)</span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>myImage3</span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>First, read the datasets, not all the data categories in the datasets are useful for sentiment analysis, only the text column needs to be focused on cleaning up, in this case, the categories the other columns are in are not important for analysis. Keeping these unneeded categories will take up unnecessary space and may also slow down the runtime. A Dataframe that retains only the <span class="in">`text`</span> column is shown in table-2 below.</span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-2</span></span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Twitter "text" Dataset</span></span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span>pd.read_csv(<span class="st">'../../data/01-modified-data/twitter_text_data.csv'</span>)</span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>data.head(<span class="dv">5</span>)</span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Step 2: Removing Stop Words and Normalizing Words</span></span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a>After removing the irrelevant columns and splitting each tweet into individual words. Then removing capitalization that would confuse a computer model, change all uppercase letters of the text to lowercase.  The data below shows the first 30 characters, and by looking at them we can see that there is still a fair amount of noise - because NLP converts @, URLs, punctuation, and emojis to Unicode, making them unhelpful for analysis, we further standardize by eliminating Unicode characters.</span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a>tknzr <span class="op">=</span> TweetTokenizer()</span>
+<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tokenizer_tweets(df):</span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> df[<span class="st">'text'</span>]:</span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>        text <span class="op">+=</span> t</span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> [i.lower() <span class="cf">for</span> i <span class="kw">in</span> tknzr.tokenize(text)]</span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tokens</span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>tokens <span class="op">=</span> tokenizer_tweets(data)</span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>tokens_sub<span class="op">=</span>tokens[<span class="dv">1</span>:<span class="dv">30</span>]</span>
+<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tokens_sub)</span>
+<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a>In all words, some words and punctuation are redundant, so I removed punctuation and words with less than three letters by import stopwords. In this way, a previously complex, multi-element text is transformed into a series of keywords prepared for text analysis.</span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a>punctiuation <span class="op">=</span> <span class="bu">list</span>(string.punctuation)</span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a>stop <span class="op">=</span> stopwords.words(<span class="st">'english'</span>) <span class="op">+</span> punctiuation</span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clear_tokens(tokens):</span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>    tokens_cl <span class="op">=</span> [t <span class="cf">for</span> t <span class="kw">in</span> tokens <span class="cf">if</span> (<span class="bu">len</span>(t) <span class="op">&gt;=</span> <span class="dv">3</span>) </span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (<span class="kw">not</span> t.startswith((<span class="st">'#'</span>, <span class="st">'@'</span>)))</span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (<span class="kw">not</span> t.startswith(<span class="st">'http'</span>))</span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (t <span class="kw">not</span> <span class="kw">in</span> stop)</span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">and</span> (t[<span class="dv">0</span>].isalpha())]</span>
+<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tokens_cl</span>
+<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a>tokens_cl <span class="op">=</span> clear_tokens(tokens)</span>
+<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a>tokens_cl_sub<span class="op">=</span>tokens_cl[<span class="dv">1</span>:<span class="dv">10</span>]</span>
+<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tokens_cl_sub)</span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Step 3: Vectorizing Text </span></span>
+<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>The most basic form of analysis of textual data is to take out the word frequency. A single tweet is too small of an entity to find out the distribution of words, hence, the analysis of the frequency of words would be done on all tweets. The number of occurrences of different keywords is shown in tablt-3 below.</span>
+<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-3</span></span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: Twitter Dataset - Keywords</span></span>
+<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a>word_occ <span class="op">=</span> pd.value_counts(np.array(tokens_cl))</span>
+<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a>word_occ <span class="op">=</span> pd.DataFrame(word_occ)</span>
+<span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a>word_occ<span class="op">=</span>word_occ.reset_index()</span>
+<span id="cb16-207"><a href="#cb16-207" aria-hidden="true" tabindex="-1"></a>word_occ.columns<span class="op">=</span>[<span class="st">'key_words'</span>, <span class="st">'number'</span>]</span>
+<span id="cb16-208"><a href="#cb16-208" aria-hidden="true" tabindex="-1"></a>word_occ.head()</span>
+<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a>Because of the large number of words, I randomly selected 20 words for the CountVectorizer step. By using CountVectorizer, I derived ONE_HOT_ENCODED matrix.</span>
+<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a>vectorizer<span class="op">=</span>CountVectorizer() </span>
+<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a>tokens_cl_sub <span class="op">=</span> random.sample(tokens_cl, <span class="dv">20</span>)</span>
+<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a>Xs  <span class="op">=</span>  vectorizer.fit_transform(tokens_cl_sub)   </span>
+<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>col_names <span class="op">=</span>vectorizer.get_feature_names()</span>
+<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a>X<span class="op">=</span>np.array(Xs.todense())</span>
+<span id="cb16-221"><a href="#cb16-221" aria-hidden="true" tabindex="-1"></a>maxs<span class="op">=</span>np.<span class="bu">max</span>(X,axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-222"><a href="#cb16-222" aria-hidden="true" tabindex="-1"></a>ONE_HOT_ENCODED<span class="op">=</span>np.ceil(X<span class="op">/</span>maxs)</span>
+<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a>ONE_HOT_ENCODED[:<span class="dv">5</span>]</span>
+<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a>The final correlation table looks like this.</span>
+<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-230"><a href="#cb16-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-231"><a href="#cb16-231" aria-hidden="true" tabindex="-1"></a>noise<span class="op">=</span>np.random.uniform(<span class="dv">0</span>,<span class="fl">0.00001</span>,X.shape) </span>
+<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a>df1<span class="op">=</span>pd.DataFrame(noise<span class="op">+</span>X, columns<span class="op">=</span>col_names)</span>
+<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a>corr<span class="op">=</span>df1.corr()</span>
+<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a>corr.head()</span>
+<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-237"><a href="#cb16-237" aria-hidden="true" tabindex="-1"></a>To learn more about code, see <span class="co">[</span><span class="ot">R code for data cleaning</span><span class="co">](https://github.com/anly501/anly-501-project-T1an-T1an/tree/main/codes/02-data-cleaning)</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+<script src="data_cleaning_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
